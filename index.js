@@ -29,9 +29,11 @@ const fetchCoffee = () => {
                 height: 1080
             });
             await page.goto(productUrl);
-            await page.waitForSelector(priceSelector);
+            await page.screenshot({ path: './screenshot.png' });
+            const content = await page.content();
+            await fsPromise.writeFile('./output.html', content);
             const textContent = await page.evaluate(() => {
-                return document.querySelector('#corePrice_desktop > div > table > tbody > tr:nth-child(1) > td.a-span12 > span.a-price.a-text-price.a-size-medium.apexPriceToPay > span.a-offscreen').textContent;
+                return document.querySelector('span.a-price > span.a-offscreen').textContent
             });
             browser.close();
             console.log('Current price: '+textContent);
