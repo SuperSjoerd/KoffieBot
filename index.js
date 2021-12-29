@@ -22,15 +22,20 @@ const _this = this;
 const fetchCoffee = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const browser = await puppeteer.launch();
+            const browser = await puppeteer.launch({ headless: true });
             const page = await browser.newPage();
+            await page.setViewport({
+                width: 1920,
+                height: 1080
+            });
             await page.goto(productUrl);
             await page.waitForSelector(priceSelector);
             const textContent = await page.evaluate(() => {
                 return document.querySelector('#corePrice_desktop > div > table > tbody > tr:nth-child(1) > td.a-span12 > span.a-price.a-text-price.a-size-medium.apexPriceToPay > span.a-offscreen').textContent;
             });
             browser.close();
-            resolve(textContent);    
+            console.log('Current price: '+textContent);
+            resolve(textContent);
         } catch (error) {
             reject(error);
         }
